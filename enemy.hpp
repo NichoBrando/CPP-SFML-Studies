@@ -8,6 +8,7 @@ class Enemy {
         sf::Sprite sprite;
         int id = 0;
         bool operator == (const Enemy& other) const;
+        void move(sf::Vector2f& playerPos);
 };
 
 #endif // ENEMY_H

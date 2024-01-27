@@ -10,7 +10,7 @@ using namespace sf;
 int main()
 {
 	VideoMode vm(512, 256);
-	RenderWindow window(vm, "Test!!!", Style::Resize);
+	RenderWindow window(vm, "Cpp Game Test", Style::Resize);
 	window.setMouseCursorVisible(false);
 
 	Texture bulletBackground;
@@ -46,7 +46,7 @@ int main()
 
 	Clock shootCDClock;
 
-	while (window.isOpen()) { 
+	while (window.isOpen()) {
 		if (Keyboard::isKeyPressed(Keyboard::Escape))
 		{
 			window.close();
@@ -110,7 +110,6 @@ int main()
 
 			if (playerRect.intersects(enemyRect))
 			{
-				std::cout << "Intersect";
 				window.close();
 			}
 		}
@@ -157,30 +156,18 @@ int main()
 
 		if (movementClock.getElapsedTime().asMilliseconds() > 10.f)
 		{
+			sf::Vector2f playerMovement;
 			if (Keyboard::isKeyPressed(Keyboard::S) || Keyboard::isKeyPressed(Keyboard::W))
 			{
-				playerProps.coordinateY = (Keyboard::isKeyPressed(Keyboard::W) ? -1.f : 1.f) * 5;
-			}
-			else
-			{
-				playerProps.coordinateY = 0;
+				playerMovement.y = (Keyboard::isKeyPressed(Keyboard::W) ? -1.f : 1.f) * 5 / 10;
 			}
 
 			if (Keyboard::isKeyPressed(Keyboard::A) || Keyboard::isKeyPressed(Keyboard::D))
 			{
-				playerProps.coordinateX = (Keyboard::isKeyPressed(Keyboard::A) ? -1.f : 1.f) * 5;
-			}
-			else 
-			{
-				playerProps.coordinateX = 0;
+				playerMovement.x = (Keyboard::isKeyPressed(Keyboard::A) ? -1.f : 1.f) * 5 / 10;
 			}
 
-			playerSprite.move(
-				sf::Vector2f(
-					playerProps.coordinateX / 10, 
-					playerProps.coordinateY / 10
-				)
-			);
+			playerSprite.move(playerMovement);
 
 			for (Bullet& bullet : bullets)
 			{
@@ -192,39 +179,10 @@ int main()
 				);
 			}
 
+			sf::Vector2f playerPos = playerSprite.getPosition();
 			for (Enemy& enemy : enemies)
 			{
-				sf::Vector2f playerPos = playerSprite.getPosition();
-				sf::Vector2f enemyPos = enemy.sprite.getPosition();
-				sf::Vector2f distance = sf::Vector2f(
-					playerPos.x - enemyPos.x,
-					playerPos.y - enemyPos.y
-				);
-
-				if (distance.x > 5)
-				{
-					distance.x = 5.f;
-				}
-
-				if (distance.x < -5)
-				{
-					distance.x = -5.f;
-				}
-
-				if (distance.y > 5)
-				{
-					distance.y = 5.f;
-				}
-
-				if (distance.y < -5)
-				{
-					distance.y = -5.f;
-				}
-
-				distance.x /= 10;
-				distance.y /= 10;
-
-				enemy.sprite.move(distance);
+				enemy.move(playerPos);
 			}
 
 			movementClock.restart();
